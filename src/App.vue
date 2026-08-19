@@ -2,7 +2,8 @@
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
 import JSONLab from './components/JSON.vue'
-import LibraryRegistrationForm from './components/LibraryRegistrationForm.vue';
+//import LibraryRegistrationForm from './views/HomeView.vue/index.js';
+import BHeader from './components/BHeader.vue';
 </script>
 
 <template>
@@ -18,7 +19,9 @@ import LibraryRegistrationForm from './components/LibraryRegistrationForm.vue';
     <TheWelcome />
     <JSONLab />
   </main> -->
-  <LibraryRegistrationForm />
+  <BHeader />
+  <!-- <LibraryRegistrationForm /> -->
+  <router-view></router-view>
 </template>
 
 <style scoped>

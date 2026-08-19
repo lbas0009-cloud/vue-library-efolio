@@ -5,6 +5,7 @@ import App from './App.vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 //import './style.css'
 
+import router from './router' // Import the router instance
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 
@@ -18,4 +19,5 @@ app.use(PrimeVue, {
     }
 })
 
+app.use(router) // Use the router instance in the Vue app
 app.mount('#app')

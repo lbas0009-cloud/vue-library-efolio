@@ -2,7 +2,8 @@
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-8 offset-lg-2">
-                <h1 class="text-center">User Information Form</h1>
+                <h1 class="text-center">W5. Library Registration Form</h1>
+                <p class="text-center">Let's build some more advanced features into our form.</p>
                 <form @submit.prevent="submitForm">
                     <div class="row mb-3">
                         <div class="col-md-6">
@@ -16,33 +17,6 @@
                                 @input="() => validateName(false)"
                             />
                             <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
-                        </div>
-                        <div class="col-lg-6">
-                            <label for="password" class="form-label">Password</label>
-                            <input
-                                type="password"
-                                class="form-control"
-                                id="password"
-                                v-model="formData.password"
-                                @blur="() => validatePassword(true)"
-                                @input="() => validatePassword(false)"
-                            />
-                            <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="form-check">
-                                <input
-                                    type="checkbox"
-                                    class="form-check-input"
-                                    id="isAustralian"
-                                    v-model="formData.isAustralian"
-                                    @change="() => validateResident(true)"
-                                />
-                                <label class="form-check-label" for="isAustralian">Australian Resident?</label>
-                            </div>
-                            <div v-if="errors.resident" class="text-danger">{{ errors.resident }}</div>
                         </div>
                         <div class="col-md-6 col-sm-6">
                             <label for="gender" class="form-label">Gender</label>
@@ -60,6 +34,48 @@
                             <div v-if="errors.gender" class="text-danger">{{ errors.gender }}</div>
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-lg-6">
+                            <label for="password" class="form-label">Password</label>
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="password"
+                                v-model="formData.password"
+                                @blur="() => validatePassword(true)"
+                                @input="() => validatePassword(false)"
+                            />
+                            <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
+                        </div>
+                        <div class="col-md-6 col-sm-6">
+                            <label for="confirm-password" class="form-label">Confirm password</label>
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="confirm-password"
+                                v-model="formData.confirmPassword"
+                                @blur="() => validateConfirmPassword(true)"
+                            />
+                            <div v-if="errors.confirmPassword" class="text-danger">
+                                {{ errors.confirmPassword }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-check">
+                                <input
+                                    type="checkbox"
+                                    class="form-check-input"
+                                    id="isAustralian"
+                                    v-model="formData.isAustralian"
+                                    @change="() => validateResident(true)"
+                                />
+                                <label class="form-check-label" for="isAustralian">Australian Resident?</label>
+                            </div>
+                            <div v-if="errors.resident" class="text-danger">{{ errors.resident }}</div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label for="reason" class="form-label">Reason for joining</label>
                         <textarea
@@ -71,6 +87,11 @@
                             @input="() => validateReason(false)"
                         ></textarea>
                         <div v-if="errors.reason" class="text-danger">{{ errors.reason }}</div>
+                        <div v-if="showFriendMessage" class="text-success">Great to have a friend</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="suburb" class="form-label">Suburb</label>
+                        <input type="text" class="form-control" id="suburb" v-bind:value="formData.suburb" />
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary me-2">Submit</button>
@@ -102,9 +123,11 @@ import Row from 'primevue/row';                   // optional
 const formData = reactive({
     username: "",
     password: "",
+    confirmPassword: "",
     isAustralian: false,
     gender: "",
-    reason: ""
+    reason: "",
+    suburb: "Clayton"
 })
 
 const submittedCards = ref([])
@@ -112,10 +135,13 @@ const submittedCards = ref([])
 const errors = ref({
     username: null,
     password: null,
+    confirmPassword: null,
     resident: null,
     gender: null,
     reason: null
 })
+
+const showFriendMessage = ref(false)
 
 const validateName = (blur) => {
     if (formData.username.length < 3) {
@@ -148,6 +174,18 @@ const validatePassword = (blur) => {
     }
 }
 
+/**
+ * Confirm password validation function that checks if the password and confirm password fields match.
+ * @param blur: boolean - If true, the function will display an error message if the passwords do not match.
+ */
+const validateConfirmPassword = (blur) => {
+    if (formData.password !== formData.confirmPassword) {
+        if (blur) errors.value.confirmPassword = "Passwords do not match."
+    } else {
+        errors.value.confirmPassword = null
+    }
+}
+
 const validateResident = (blur) => {
     if (!formData.isAustralian) {
         if (blur) errors.value.resident = "You must confirm your residency status"
@@ -170,11 +208,14 @@ const validateReason = (blur) => {
     } else {
         errors.value.reason = null
     }
+
+    showFriendMessage.value = formData.reason.toLowerCase().includes("friend")
 }
 
 const submitForm = () => {
     validateName(true)
     validatePassword(true)
+    validateConfirmPassword(true)
     validateResident(true)
     validateGender(true)
     validateReason(true)
@@ -182,6 +223,7 @@ const submitForm = () => {
     if (
         !errors.value.username &&
         !errors.value.password &&
+        !errors.value.confirmPassword &&
         !errors.value.resident &&
         !errors.value.gender &&
         !errors.value.reason
@@ -194,9 +236,11 @@ const submitForm = () => {
 const clearForm = () => {
     formData.username = ""
     formData.password = ""
+    formData.confirmPassword = ""
     formData.isAustralian = false
     formData.gender = ""
     formData.reason = ""
+    formData.suburb = "Clayton"
 }
 </script>
 
