@@ -106,6 +106,12 @@
                         <Column field="isAustralian" header="Australian Resident"></Column>
                         <Column field="gender" header="Gender"></Column>
                         <Column field="reason" header="Reason"></Column>
+                        <Column v-if="userRole === 'admin'" header="Actions">
+                            <template #body="slotProps">
+                                <button class="btn btn-sm btn-warning me-2" @click="editEntry(slotProps.index)">Edit</button>
+                                <button class="btn btn-sm btn-danger" @click="deleteEntry(slotProps.index)">Delete</button>
+                            </template>
+                        </Column>
                     </DataTable>
                 </div>
             </div>
@@ -119,6 +125,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import ColumnGroup from 'primevue/columngroup';   // optional
 import Row from 'primevue/row';                   // optional
+import { userRole } from '../firebaseAuth'
 
 const formData = reactive({
     username: "",
@@ -241,6 +248,22 @@ const clearForm = () => {
     formData.gender = ""
     formData.reason = ""
     formData.suburb = "Clayton"
+}
+
+const editEntry = (index) => {
+    const entry = submittedCards.value[index]
+    formData.username = entry.username
+    formData.password = entry.password
+    formData.confirmPassword = entry.password
+    formData.isAustralian = entry.isAustralian
+    formData.gender = entry.gender
+    formData.reason = entry.reason
+    formData.suburb = entry.suburb
+    submittedCards.value.splice(index, 1)
+}
+
+const deleteEntry = (index) => {
+    submittedCards.value.splice(index, 1)
 }
 </script>
 
