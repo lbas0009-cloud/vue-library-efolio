@@ -28,6 +28,9 @@
                 <li class="nav-item" v-if="firebaseUser">
                     <a href="#" class="nav-link" @click.prevent="handleFirebaseLogout">Firebase Logout</a>
                 </li>
+                <li class="nav-item">
+                    <router-link to="/addbook" class="nav-link" active-class="active">Add Book</router-link>
+                </li>
             </ul>
         </header>
     </div>
