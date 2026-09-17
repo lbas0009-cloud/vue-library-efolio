@@ -22,17 +22,18 @@ import { ref } from 'vue'
 import db from '../firebase/init.js'
 import { collection, addDoc } from 'firebase/firestore'
 import BookList from '../components/BookList.vue'
+import axios from 'axios'
 
 const isbn = ref('')
 const name = ref('')
 
 const addBook = async () => {
     try {
-        await addDoc(collection(db, "books"), {
-            isbn: Number(isbn.value),
+        const response = await axios.post('https://us-central1-fit5032-8102c.cloudfunctions.net/addBookCapitalized', {
+            isbn: isbn.value,
             name: name.value
         })
-        console.log("Book added successfully!")
+        console.log("Book added successfully with capitalized name:", response.data)
         isbn.value = ''
         name.value = ''
     } catch (error) {
